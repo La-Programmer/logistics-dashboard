@@ -1,0 +1,191 @@
+# =========================
+# FRONTEND (Next.js + Node)
+# =========================
+
+# dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.*
+/frontend/.yarn/*
+!/frontend/.yarn/patches
+!/frontend/.yarn/plugins
+!/frontend/.yarn/releases
+!/frontend/.yarn/versions
+
+# testing
+/frontend/coverage
+
+# next.js
+/frontend/.next
+/frontend/out
+
+# production
+/frontend/build
+
+# misc
+/frontend/.DS_Store
+/frontend/*.pem
+
+# debug
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+/frontend/.env*
+
+# vercel
+/frontend/.vercel
+
+# typescript
+/frontend/*.tsbuildinfo
+/frontend/next-env.d.ts
+
+
+# =========================
+# BACKEND (Python + FastAPI)
+# =========================
+
+# Byte-compiled / optimized / DLL files
+/backend/__pycache__/
+/backend/*.py[cod]
+/backend/*$py.class
+
+# C extensions
+/backend/*.so
+
+# Distribution / packaging
+/backend/.Python
+/backend/build/
+/backend/develop-eggs/
+/backend/dist/
+/backend/downloads/
+/backend/eggs/
+/backend/.eggs/
+/backend/lib/
+/backend/lib64/
+/backend/parts/
+/backend/sdist/
+/backend/var/
+/backend/wheels/
+/backend/share/python-wheels/
+/backend/*.egg-info/
+/backend/.installed.cfg
+/backend/*.egg
+/backend/MANIFEST
+
+# PyInstaller
+/backend/*.manifest
+/backend/*.spec
+
+# Installer logs
+/backend/pip-log.txt
+/backend/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+/backend/htmlcov/
+/backend/.tox/
+/backend/.nox/
+/backend/.coverage
+/backend/.coverage.*
+/backend/.cache
+/backend/nosetests.xml
+/backend/coverage.xml
+/backend/*.cover
+/backend/*.py,cover
+/backend/.hypothesis/
+/backend/.pytest_cache/
+/backend/cover/
+
+# Translations
+/backend/*.mo
+/backend/*.pot
+
+# Django stuff
+/backend/*.log
+/backend/local_settings.py
+/backend/db.sqlite3
+/backend/db.sqlite3-journal
+
+# Flask stuff
+/backend/instance/
+/backend/.webassets-cache
+
+# Scrapy stuff
+/backend/.scrapy
+
+# Sphinx documentation
+/backend/docs/_build/
+
+# PyBuilder
+/backend/.pybuilder/
+/backend/target/
+
+# Jupyter Notebook
+/backend/.ipynb_checkpoints
+
+# IPython
+/backend/profile_default/
+/backend/ipython_config.py
+
+# pyenv
+# .python-version
+
+# pipenv
+#Pipfile.lock
+
+# poetry
+#poetry.lock
+
+# pdm
+/backend/.pdm.toml
+/backend/.pdm-python
+/backend/.pdm-build/
+/backend/pdm.lock
+
+# PEP 582
+/backend/__pypackages__/
+
+# Celery
+/backend/celerybeat-schedule
+/backend/celerybeat.pid
+
+# SageMath
+/backend/*.sage.py
+
+# Environments
+/backend/.env
+/backend/.venv
+/backend/env/
+/backend/venv/
+/backend/ENV/
+/backend/env.bak/
+/backend/venv.bak/
+
+# Spyder
+/backend/.spyderproject
+/backend/.spyproject
+
+# Rope
+/backend/.ropeproject
+
+# mkdocs
+/backend/site
+
+# mypy
+/backend/.mypy_cache/
+/backend/.dmypy.json
+/backend/dmypy.json
+
+# Pyre type checker
+/backend/.pyre/
+
+# pytype
+/backend/.pytype/
+
+# Cython
+/backend/cython_debug/
+
+# PyCharm / IDE
+/backend/.idea/
