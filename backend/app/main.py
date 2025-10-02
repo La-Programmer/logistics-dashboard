@@ -1,12 +1,15 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
-import asyncio
-import random
 
-app = FastAPI(title="Logistics Dashboard MVP")
+from .api.routes import create_metrics_router
+from .application.dto.metrics import LogisticsMetricsDTO
+from .application.services.metrics_service import MetricsService
+from .infrastructure.simulation.metrics_simulator import MetricsSimulator
+from .infrastructure.websocket.manager import ConnectionManager, MetricsBroadcaster
 
-# CORS for frontend
+app = FastAPI(title="Cross-Team Logistics Dashboard MVP")
+
+# CORS to allow the Next.js frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,47 +18,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory metrics
-metrics = {
-    "on_time_delivery_rate": 95,
-    "avg_delivery_time": 32,
-    "perfect_order_rate": 90,
-    "orders_per_hour": 120,
-    "truck_utilization": 75,
-}
+simulator = MetricsSimulator()
+metrics_service = MetricsService(simulator)
+connection_manager = ConnectionManager()
 
-# Simple Connection Manager
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
+async def _generate_update_payload() -> dict:
+    metrics = await metrics_service.generate_next_metrics()
+    return LogisticsMetricsDTO.from_domain(metrics).model_dump()
 
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
 
-    async def broadcast(self, message: dict):
-        for connection in self.active_connections:
-            await connection.send_json(message)
+broadcaster = MetricsBroadcaster(
+    connection_manager,
+    update_coro=_generate_update_payload,
+    interval=3.0,
+)
 
-manager = ConnectionManager()
+app.include_router(create_metrics_router(metrics_service))
 
-@app.get("/api/metrics")
-async def get_metrics():
-    return metrics
 
 @app.websocket("/ws/metrics")
-async def metrics_ws(websocket: WebSocket):
-    await manager.connect(websocket)
+async def metrics_ws(websocket: WebSocket) -> None:
+    await connection_manager.connect(websocket)
     try:
+        current = await metrics_service.get_current_metrics()
+        await connection_manager.send_personal_message(
+            LogisticsMetricsDTO.from_domain(current).model_dump(),
+            websocket,
+        )
+
+        await broadcaster.start()
+
         while True:
-            # Randomly update metrics
-            metrics["on_time_delivery_rate"] = random.randint(85, 98)
-            metrics["orders_per_hour"] = random.randint(80, 150)
-            metrics["truck_utilization"] = random.randint(60, 90)
-            await manager.broadcast(metrics)
-            await asyncio.sleep(3)
+            await websocket.receive_text()
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        await connection_manager.disconnect(websocket)
+    finally:
+        if connection_manager.connection_count == 0:
+            await broadcaster.stop()
+
+
+@app.on_event("shutdown")
+async def shutdown_event() -> None:
+    await broadcaster.stop()
