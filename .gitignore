@@ -48,7 +48,8 @@
 # =========================
 
 # Byte-compiled / optimized / DLL files
-/backend/__pycache__/
+/backend/**/__pycache__/
+/backend/**/__pycache__/*.py[cod]
 /backend/*.py[cod]
 /backend/*$py.class
 
