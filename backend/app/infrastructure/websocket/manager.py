@@ -4,8 +4,6 @@ from typing import Awaitable, Callable, List, Optional
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from app.core.helpers.dict_helper import serialize_message
-
 
 class ConnectionManager:
     """Keeps track of active websocket connections and handles broadcasts."""
@@ -29,10 +27,9 @@ class ConnectionManager:
                 self._connections.remove(websocket)
 
     async def send_personal_message(self, message: dict, websocket: WebSocket) -> None:
-        await websocket.send_json(serialize_message(message))
+        await websocket.send_json(message)
 
     async def broadcast(self, message: dict) -> None:
-        message = serialize_message(message)
         stale: List[WebSocket] = []
         for connection in list(self._connections):
             try:

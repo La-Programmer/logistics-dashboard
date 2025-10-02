@@ -25,7 +25,7 @@ connection_manager = ConnectionManager()
 
 async def _generate_update_payload() -> dict:
     metrics = await metrics_service.generate_next_metrics()
-    return LogisticsMetricsDTO.from_domain(metrics).model_dump()
+    return LogisticsMetricsDTO.from_domain(metrics).model_dump(mode="json")
 
 
 broadcaster = MetricsBroadcaster(
@@ -43,7 +43,7 @@ async def metrics_ws(websocket: WebSocket) -> None:
     try:
         current = await metrics_service.get_current_metrics()
         await connection_manager.send_personal_message(
-            LogisticsMetricsDTO.from_domain(current).model_dump(),
+            LogisticsMetricsDTO.from_domain(current).model_dump(mode="json"),
             websocket,
         )
 
